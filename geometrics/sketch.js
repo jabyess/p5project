@@ -42,10 +42,28 @@ function draw() {
 }
 
 function addHexagon() {
+
   // Calculate grid position for honeycomb arrangement
-  const row = Math.floor(hexagons.length / 3);
-  const col = hexagons.length % 3;
+  // const row = Math.floor(hexagons.length / 4);
+  var row, col;
+  if(windowWidth > 1200) {
+    row = Math.floor(hexagons.length / 6);
+    col = hexagons.length % 6;
+  }
+  else if(windowWidth > 800) {
+    row = Math.floor(hexagons.length / 4);
+    col = hexagons.length % 4;
+  }
+  else if (windowWidth > 600) {
+    row = Math.floor(hexagons.length / 3);
+    col = hexagons.length % 3;
+  }
+  else {
+    row = Math.floor(hexagons.length / 2);
+    col = hexagons.length % 2;
+  }
   
+  // col = hexagons.length % (windowWidth > 800 ? 4 : windowWidth > 600 ? 2 : 1);
   // Honeycomb pattern with proper spacing
   const centerX =  col * hexSpacingX + (row % 2) * hexSpacingX / 2;
   const centerY =  row * hexSpacingY; 
