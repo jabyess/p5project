@@ -4,28 +4,35 @@ const sideLength = 100;
 const hexSpacingX = sideLength * 3; // horizontal spacing between hexagon centers
 const hexSpacingY = sideLength * 0.866; // vertical spacing between rows (sqrt(3)/2)
 
+
 function setup() {
   let addHexButton = createButton("Add Hexagon");
   addHexButton.mousePressed(addHexagon);
+  addHexButton.parent('button-container'); // Parent to the button container
   
   let removeHexButton = createButton("Remove Hexagon");
   removeHexButton.mousePressed(removeHexagon);
+  removeHexButton.parent('button-container');
   
   let addMandalaButton = createButton("Add Mandala");
   addMandalaButton.mousePressed(addMandala);
+  addMandalaButton.parent('button-container');
   
   let removeMandalaButton = createButton("Remove Mandala");
   removeMandalaButton.mousePressed(removeMandala);
+  removeMandalaButton.parent('button-container');
   
-  createCanvas(800, 600);
+  // Change to full screen canvas
+  let canvas = createCanvas(windowWidth, windowHeight);
+  canvas.parent('sketch-container'); // Parent to the sketch container
 }
 
 function draw() {
   background(220);
   
   // Draw all hexagons
-  hexagons.forEach(hexagon => {
-    drawHexagon(hexagon.x, hexagon.y);
+  hexagons.forEach(({centerX, centerY, fillColors}) => {
+    drawHexagon({centerX, centerY, fillColors});
   });
   
   // Draw all mandalas
@@ -40,10 +47,17 @@ function addHexagon() {
   const col = hexagons.length % 3;
   
   // Honeycomb pattern with proper spacing
-  const x = 50 + col * hexSpacingX + (row % 2) * hexSpacingX / 2;
-  const y = 50 + row * hexSpacingY;
+  const centerX =  col * hexSpacingX + (row % 2) * hexSpacingX / 2;
+  const centerY =  row * hexSpacingY; 
   
-  hexagons.push({ x, y });
+  let rand = Math.ceil(Math.random() * 10);
+  
+  let fillColors = [219, 124, 38] //orange
+  if(rand > 8) {
+    fillColors = [38, 50, 100]; //blue
+  }
+  
+  hexagons.push({ centerX, centerY, fillColors });
 }
 
 function removeHexagon() {
@@ -70,11 +84,12 @@ function removeMandala() {
   }
 }
 
-function drawHexagon(centerX, centerY) {
+function drawHexagon({centerX, centerY, fillColors}) {
+
   beginShape();
   stroke(0);
   strokeWeight(2);
-  fill(200, 150, 255);
+  fill(fillColors[0], fillColors[1], fillColors[2]);
   
   // Draw 6 vertices of the hexagon
   for (let i = 0; i < 6; i++) {
@@ -140,4 +155,8 @@ function drawMandala(centerX, centerY) {
   stroke(0);
   strokeWeight(2);
   circle(centerX, centerY, 15);
+}
+
+function windowResized() {
+  resizeCanvas(windowWidth, windowHeight);
 }

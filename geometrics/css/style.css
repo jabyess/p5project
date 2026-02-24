@@ -1,13 +1,63 @@
-* {
+/* * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-}
-
+} */
+/* ...existing code... */
 body {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+    overflow: hidden; /* Prevent scrollbars */
     background: #f0f0f0;
 }
+
+#sketch-container {
+    position: relative; /* For absolute positioning of buttons */
+    width: 100vw;
+    height: 100vh;
+}
+
+canvas {
+    display: block; /* Remove default margins */
+}
+
+#button-container {
+    position: absolute;
+    top: 20px; /* Float at top */
+    left: 50%;
+    transform: translateX(-50%); /* Center horizontally */
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    z-index: 10; /* Ensure above canvas */
+}
+
+#button-container button {
+    padding: 10px 15px;
+    font-size: 14px;
+    background-color: rgba(76, 175, 80, 0.8); /* Semi-transparent */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#button-container button:hover {
+    background-color: rgba(69, 160, 73, 0.9);
+}
+
+/* Media queries for mobile adjustments */
+@media (max-width: 768px) {
+    #button-container {
+        top: 10px;
+        gap: 5px;
+    }
+    #button-container button {
+        padding: 8px 12px;
+        font-size: 12px;
+        min-width: 100px;
+    }
+}
+/* ...existing code... */
