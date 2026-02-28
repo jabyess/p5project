@@ -1,6 +1,9 @@
 let hexagons = [];
 let mandalas = [];
+let triangles = [];
 const sideLength = 100;
+const triS = 140; // triangle side length
+const triH = triS * Math.sqrt(3) / 2; // triangle height
 const hexSpacingX = sideLength * 3; // horizontal spacing between hexagon centers
 const hexSpacingY = sideLength * 0.866; // vertical spacing between rows (sqrt(3)/2)
 
@@ -14,6 +17,14 @@ function setup() {
   removeHexButton.mousePressed(removeHexagon);
   removeHexButton.parent('button-container');
   
+  let addTriButton = createButton("Add Triangle");
+  addTriButton.mousePressed(addTriangle);
+  addTriButton.parent('button-container');
+
+  let removeTriButton = createButton("Remove Triangle");
+  removeTriButton.mousePressed(removeTriangle);
+  removeTriButton.parent('button-container');
+
   let addMandalaButton = createButton("Add Mandala");
   addMandalaButton.mousePressed(addMandala);
   addMandalaButton.parent('button-container');
@@ -35,10 +46,62 @@ function draw() {
     drawHexagon({centerX, centerY, fillColors});
   });
   
+  // Draw all triangles
+  triangles.forEach(tri => drawTriangle(tri));
+
   // Draw all mandalas
   mandalas.forEach(mandala => {
     drawMandala(mandala.x, mandala.y);
   });
+}
+
+function getTriCols() {
+  if (windowWidth > 1200) return 10;
+  if (windowWidth > 800) return 8;
+  if (windowWidth > 600) return 5;
+  return 4;
+}
+
+function addTriangle() {
+  const nCols = getTriCols();
+  const totalPerBand = 2 * nCols;
+  const band = Math.floor(triangles.length / totalPerBand);
+  const local = triangles.length % totalPerBand;
+  const isUp = local % 2 === 0;
+  const k = Math.floor(local / 2);
+
+  // Each band is triH tall; within a band, up centroids sit at 2/3 and down at 1/3 from the top.
+  // Odd bands shift x by -triS/2 so triangles interlock across band boundaries.
+  const x = k * triS + (isUp ? 0 : triS / 2) + (band % 2 === 0 ? triS / 2 : 0) ;
+  const y = band * triH + (isUp ? 2 * triH / 3 : triH / 3);
+
+  const fillColors = isUp ? [255, 179, 160] : [160, 200, 255];
+  triangles.push({ x, y, isUp, fillColors });
+}
+
+function removeTriangle() {
+  if (triangles.length > 0) {
+    triangles.pop();
+  }
+}
+
+function drawTriangle({ x, y, isUp, fillColors }) {
+  beginShape();
+  stroke(0);
+  strokeWeight(2);
+  fill(fillColors[0], fillColors[1], fillColors[2]);
+
+  if (isUp) {
+    vertex(x,             y - 2 * triH / 3);
+    vertex(x - triS / 2, y + triH / 3);
+    vertex(x + triS / 2, y + triH / 3);
+  } else {
+    vertex(x - triS / 2, y - triH / 3);
+    vertex(x + triS / 2, y - triH / 3);
+    vertex(x,             y + 2 * triH / 3);
+  }
+
+  endShape(CLOSE);
 }
 
 function addHexagon() {
@@ -86,13 +149,13 @@ function removeHexagon() {
 
 function addMandala() {
   // Calculate grid position for mandala arrangement
-  const row = Math.floor(mandalas.length / 2);
-  const col = mandalas.length % 2;
+  const row = Math.floor(mandalas.length / 3);
+  const col = mandalas.length % 3;
   
   // Space mandalas horizontally and vertically
-  const x = 150 + col * 400;
-  const y = 150 + row * 300;
-  
+  const x = col * 175;
+  const y = row * 175;
+
   mandalas.push({ x, y });
 }
 
@@ -138,7 +201,7 @@ function drawMandala(centerX, centerY) {
   }
   endShape(CLOSE);
   
-  // Draw concentric circles
+  // // Draw concentric circles
   for (let r = 20; r < maxRadius; r += 20) {
     noFill();
     stroke(100);
