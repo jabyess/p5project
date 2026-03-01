@@ -23,7 +23,6 @@ canvas {
 
 #button-container {
     position: absolute;
-    /* top: 20px; Float at top */
     bottom: 20px;
     left: 50%;
     transform: translateX(-50%); /* Center horizontally */
@@ -32,6 +31,8 @@ canvas {
     justify-content: center;
     gap: 10px;
     z-index: 10; /* Ensure above canvas */
+    width: 100%;
+    max-width: 1200px;
 }
 
 #button-container button {
@@ -47,6 +48,10 @@ canvas {
 
 #button-container button:hover {
     background-color: rgba(69, 160, 73, 0.9);
+}
+
+#button-container button:last-child {
+    background-color: rgba(244, 67, 54, 0.8); /* Semi-transparent red */
 }
 
 /* Media queries for mobile adjustments */
