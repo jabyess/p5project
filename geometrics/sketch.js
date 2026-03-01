@@ -20,15 +20,27 @@ let muted = "#9abca7";
 function setup() {
   let addHexButton = createButton("Add Hexagon");
   addHexButton.mousePressed(addHexagon);
-  addHexButton.parent("button-container"); // Parent to the button container
+  addHexButton.parent("button-container");
+
+  let add10HexButton = createButton("Add 10 Hexagons");
+  add10HexButton.mousePressed(() => { for (let i = 0; i < 10; i++) addHexagon(); });
+  add10HexButton.parent("button-container");
 
   let addTriButton = createButton("Add Triangle");
   addTriButton.mousePressed(addTriangle);
   addTriButton.parent("button-container");
 
+  let add10TriButton = createButton("Add 10 Triangles");
+  add10TriButton.mousePressed(() => { for (let i = 0; i < 10; i++) addTriangle(); });
+  add10TriButton.parent("button-container");
+
   let addMandalaButton = createButton("Add Mandala");
   addMandalaButton.mousePressed(addMandala);
   addMandalaButton.parent("button-container");
+
+  let add10MandalaButton = createButton("Add 10 Mandalas");
+  add10MandalaButton.mousePressed(() => { for (let i = 0; i < 10; i++) addMandala(); });
+  add10MandalaButton.parent("button-container");
 
   let spinButton = createButton("Spin Mandalas");
   spinButton.mousePressed(() => {
@@ -42,10 +54,10 @@ function setup() {
     hexagons = [];
     triangles = [];
     mandalas = [];
+    mandalaSpinning = false;
+    spinButton.html("Spin Mandalas");
   });
   clearButton.parent("button-container");
-
-
 
   // Change to full screen canvas
   let canvas = createCanvas(windowWidth, windowHeight);
@@ -71,8 +83,11 @@ function draw() {
 }
 
 function getTriCols() {
-  if (windowWidth > 1200) return 10;
-  if (windowWidth > 800) return 8;
+  if (windowWidth > 2000) return 22;
+  if (windowWidth > 1800) return 19;
+  if (windowWidth > 1400) return 15;
+  if (windowWidth > 1200) return 13;
+  if (windowWidth > 800) return 9;
   if (windowWidth > 600) return 5;
   return 4;
 }
@@ -87,7 +102,7 @@ function addTriangle() {
 
   // Each band is triH tall; within a band, up centroids sit at 2/3 and down at 1/3 from the top.
   // Odd bands shift x by -triS/2 so triangles interlock across band boundaries.
-  const x = k * triS + (isUp ? 0 : triS / 2) + (band % 2 === 0 ? triS / 2 : 0);
+  const x = (k * triS + (isUp ? 0 : triS / 2) + (band % 2 === 0 ? triS / 2 : 0) - triS / 2);
   const y = band * triH + (isUp ? (2 * triH) / 3 : triH / 3);
 
   const fillColor = isUp ? almond : powder; // Up triangles are almond, down are powder
@@ -121,9 +136,15 @@ function drawTriangle({ x, y, isUp, fillColor }) {
 
 function addHexagon() {
   // Calculate grid position for honeycomb arrangement
-  // const row = Math.floor(hexagons.length / 4);
+
   var row, col;
-  if (windowWidth > 1200) {
+  if (windowWidth > 2000) {
+    row = Math.floor(hexagons.length / 10);
+    col = hexagons.length % 10;
+  } else if (windowWidth > 1600) {
+    row = Math.floor(hexagons.length / 8);
+    col = hexagons.length % 8;
+  } else if (windowWidth > 1200) {
     row = Math.floor(hexagons.length / 6);
     col = hexagons.length % 6;
   } else if (windowWidth > 800) {
@@ -137,7 +158,6 @@ function addHexagon() {
     col = hexagons.length % 2;
   }
 
-  // col = hexagons.length % (windowWidth > 800 ? 4 : windowWidth > 600 ? 2 : 1);
   // Honeycomb pattern with proper spacing
   const centerX = col * hexSpacingX + ((row % 2) * hexSpacingX) / 2;
   const centerY = row * hexSpacingY;
@@ -162,6 +182,7 @@ function getMandalaCols() {
   if (windowWidth > 1600) return 12;
   if (windowWidth > 1200) return 10;
   if (windowWidth > 800) return 6;
+  if (windowWidth > 500) return 5;
   return 3;
 }
 
